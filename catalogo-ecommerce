@@ -1,0 +1,114 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Estrutura do produto
+typedef struct Produto {
+    int codigo;
+    char nome[50];
+    float preco;
+    int estoque;
+} Produto;
+
+// ---------------- ÁRVORE POR PREÇO ----------------
+typedef struct NoPreco {
+    Produto produto;
+    struct NoPreco *esq;
+    struct NoPreco *dir;
+} NoPreco;
+
+NoPreco* criarNoPreco(int codigo, char nome[], float preco, int estoque) {
+    NoPreco* novo = (NoPreco*) malloc(sizeof(NoPreco));
+    novo->produto.codigo = codigo;
+    strcpy(novo->produto.nome, nome);
+    novo->produto.preco = preco;
+    novo->produto.estoque = estoque;
+    novo->esq = novo->dir = NULL;
+    return novo;
+}
+
+NoPreco* inserirPorPreco(NoPreco* raiz, int codigo, char nome[], float preco, int estoque) {
+    if (raiz == NULL) return criarNoPreco(codigo, nome, preco, estoque);
+    if (preco < raiz->produto.preco)
+        raiz->esq = inserirPorPreco(raiz->esq, codigo, nome, preco, estoque);
+    else
+        raiz->dir = inserirPorPreco(raiz->dir, codigo, nome, preco, estoque);
+    return raiz;
+}
+
+NoPreco* buscarPorPreco(NoPreco* raiz, float preco) {
+    if (raiz == NULL || raiz->produto.preco == preco) return raiz;
+    if (preco < raiz->produto.preco)
+        return buscarPorPreco(raiz->esq, preco);
+    else
+        return buscarPorPreco(raiz->dir, preco);
+}
+
+// ---------------- ÁRVORE POR CÓDIGO ----------------
+typedef struct NoCodigo {
+    Produto produto;
+    struct NoCodigo *esq;
+    struct NoCodigo *dir;
+} NoCodigo;
+
+NoCodigo* criarNoCodigo(int codigo, char nome[], float preco, int estoque) {
+    NoCodigo* novo = (NoCodigo*) malloc(sizeof(NoCodigo));
+    novo->produto.codigo = codigo;
+    strcpy(novo->produto.nome, nome);
+    novo->produto.preco = preco;
+    novo->produto.estoque = estoque;
+    novo->esq = novo->dir = NULL;
+    return novo;
+}
+
+NoCodigo* inserirPorCodigo(NoCodigo* raiz, int codigo, char nome[], float preco, int estoque) {
+    if (raiz == NULL) return criarNoCodigo(codigo, nome, preco, estoque);
+    if (codigo < raiz->produto.codigo)
+        raiz->esq = inserirPorCodigo(raiz->esq, codigo, nome, preco, estoque);
+    else
+        raiz->dir = inserirPorCodigo(raiz->dir, codigo, nome, preco, estoque);
+    return raiz;
+}
+
+NoCodigo* buscarPorCodigo(NoCodigo* raiz, int codigo) {
+    if (raiz == NULL || raiz->produto.codigo == codigo) return raiz;
+    if (codigo < raiz->produto.codigo)
+        return buscarPorCodigo(raiz->esq, codigo);
+    else
+        return buscarPorCodigo(raiz->dir, codigo);
+}
+
+// ---------------- ÁRVORE POR NOME (CARRINHO) ----------------
+typedef struct NoNome {
+    Produto produto;
+    struct NoNome *esq;
+    struct NoNome *dir;
+} NoNome;
+
+NoNome* criarNoNome(int codigo, char nome[], float preco, int estoque) {
+    NoNome* novo = (NoNome*) malloc(sizeof(NoNome));
+    novo->produto.codigo = codigo;
+    strcpy(novo->produto.nome, nome);
+    novo->produto.preco = preco;
+    novo->produto.estoque = estoque;
+    novo->esq = novo->dir = NULL;
+    return novo;
+}
+
+NoNome* inserirPorNome(NoNome* raiz, int codigo, char nome[], float preco, int estoque) {
+    if (raiz == NULL) return criarNoNome(codigo, nome, preco, estoque);
+    if (strcmp(nome, raiz->produto.nome) < 0)
+        raiz->esq = inserirPorNome(raiz->esq, codigo, nome, preco, estoque);
+    else
+        raiz->dir = inserirPorNome(raiz->dir, codigo, nome, preco, estoque);
+    return raiz;
+}
+
+NoNome* buscarPorNome(NoNome* raiz, char nome[]) {
+    if (raiz == NULL || strcmp(raiz->produto.nome, nome) == 0) return raiz;
+    if (strcmp(nome, raiz->produto.nome) < 0)
+        return buscarPorNome(raiz->esq, nome);
+    else
+        return buscarPorNome(raiz->dir, nome);
+}
+              
